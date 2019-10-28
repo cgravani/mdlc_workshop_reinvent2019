@@ -1,5 +1,5 @@
-# mdlc_workshop_reinvent2019
-Automated ML Model Development Life Cycle (MDLC) 
+# MDLC Workshop re:Invent 2019
+A workshop to create an automated ML Model Development Life Cycle (MDLC) 
 
 ## Activity 1: Create a Lambda function to initialize the model training workflow
 
