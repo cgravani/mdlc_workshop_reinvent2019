@@ -19,4 +19,13 @@ A workshop to create an automated ML Model Development Life Cycle (MDLC)
 
 7. Open the text-file named **reinvent-mdlc-training-initialize-workflow.js**
 8. Copy all of the code from that file and paste it into the code editor (completely replace all of the default code that was generated in the index.js section of the code editor)
-9. Click **Save**  in the top, right-hand corner of the screen
+9. Click **Save**  in the top, right-hand corner of the screen.
+
+## Activity 2: Create Step Functions to Manage the Workflows
+
+**Steps:**
+
+1. In the AWS Console, click **Services** in the top, left-hand corner of the screen
+2. Type **Step** into the search field and hit Enter
+3. Click **Get started**
+4. 
