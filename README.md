@@ -12,11 +12,13 @@ A workshop to create an automated ML Model Development Life Cycle (MDLC)
 5. At the bottom of the screen, click the arrow on the left-hand side of the text **Choose or create an execution role** 
 6. Select **Use an existing role**
 7. From the drop-down menu, select the role that contains **InitializeTraining** in the name 
+
 ![Create Function](/images/create_function_training_iam.png)
 
 8. Select **Create function**
 9. Scroll to the **Function code** section and ensure that the **Code entry type** is set to **Upload a file from Amazon S3** (see screenshot below)
 10. In the **Amazon S3 link URL** input field, paste: s3://kk-public-ws-bucket/lambda-steps/reinvent-mdlc-training-initialize-workflow.zip
+
 ![Function Code](/images/function_code_training_s3.png)
 
 11. Click **Save**  in the top, right-hand corner of the screen.
