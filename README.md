@@ -30,4 +30,4 @@ A workshop to create an automated ML Model Development Life Cycle (MDLC)
 1. In the AWS Console, click **Services** in the top, left-hand corner of the screen
 2. Type **Step** into the search field and hit Enter
 3. Click **Get started**
-4. 
+4. Click **Create state machine**
