@@ -9,17 +9,17 @@ A workshop to create an automated ML Model Development Life Cycle (MDLC)
 2. Type **Lambda** into the search field and hit Enter
 3. Select **Create Function**
 4. Select **Author from Scratch**, enter **reinvent-mdlc-training-initialize-workflow** as the function name, and select **Node.js 8.10** as the runtime (see screenshot below)
+5. At the bottom of the screen, click the arrow on the left-hand side of the text **Choose or create an execution role** 
+6. Select **Use an existing role**
+7. From the drop-down menu, select the role that contains **InitializeTraining** in the name 
+![Create Function](/images/create_function_training_iam.png)
 
-![Create Function](/images/create_function_training.png)
+8. Select **Create function**
+9. Scroll to the **Function code** section and ensure that the **Code entry type** is set to **Upload a file from Amazon S3** (see screenshot below)
+10. In the **Amazon S3 link URL** input field, paste: s3://kk-public-ws-bucket/lambda-steps/reinvent-mdlc-training-initialize-workflow.zip
+![Function Code](/images/function_code_training_s3.png)
 
-5. Select **Create function**
-6. Scroll to the **Function code** section and ensure that the **Code entry type** is set to **Edit code inline** (see screenshot below)
-
-![Function Code](/images/function_code_training.png)
-
-7. Open the text-file named **reinvent-mdlc-training-initialize-workflow.js**
-8. Copy all of the code from that file and paste it into the code editor (completely replace all of the default code that was generated in the index.js section of the code editor)
-9. Click **Save**  in the top, right-hand corner of the screen.
+11. Click **Save**  in the top, right-hand corner of the screen.
 
 ## Activity 2: Create Step Functions to Manage the Workflows
 
