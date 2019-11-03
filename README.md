@@ -21,6 +21,8 @@ A workshop to create an automated ML Model Development Life Cycle (MDLC)
 
 ![Function Code](/images/function_code_training.png)
 
+![Function Code](/code/reinvent-mdlc-training-initialize-workflow.js)
+
 11. Click **Save**  in the top, right-hand corner of the screen.
 
 ## Activity 2: Create Step Functions to Manage the Workflows
