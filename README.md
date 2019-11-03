@@ -20,6 +20,7 @@ A workshop to create an automated ML Model Development Life Cycle (MDLC)
 8. Copy all of the code from ![here](/code/reinvent-mdlc-training-initialize-workflow.js) and paste it into the code editor (completely replace all of the default code that was generated in the index.js section of the code editor)
 9. Click **Save**  in the top, right-hand corner of the screen.
 
+
 ## Activity 2: Create Step Functions to Manage the Workflows
 
 **Steps:**
@@ -36,3 +37,10 @@ A workshop to create an automated ML Model Development Life Cycle (MDLC)
 
 8. This is where the fun begins! This is a builder session, which means that you will not be simply following steps on a web page for the entire session, but instead you will work with the instructor to build the solution. Now it's time to start figuring out how to define the state machine in its entirety and actually get it working! 
 You can use the **ReInventMDLCTrainingWorkflow** state machine that we've already generated for you via CloudFormation as a reference, and the instructor will also guide you through how to get the state machine working...
+
+
+## Activity 3: Create Step Functions to Manage the Workflows
+
+**Steps:**
+
+1. 
