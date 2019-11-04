@@ -43,4 +43,4 @@ You can use the **ReInventMDLCTrainingWorkflow** state machine that we've alread
 
 **Steps:**
 
-1. 
+1. In the AWS Step Functions console...
