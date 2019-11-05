@@ -26,6 +26,28 @@ A workshop to create an automated ML Model Development Life Cycle (MDLC)
 
 ## Activity 2: Create Step Functions to manage the workflows
 
+### Activity 2.1: Create the training workflow state machine
+
+**Steps:**
+
+1. In the AWS Console, click **Services** in the top, left-hand corner of the screen
+2. Type **Step** into the search field and hit Enter
+3. Click **Get started**
+4. Click **Create state machine**
+5. Select **Author with code snippets**
+6. Enter **reinvent-mdlc-training-workflow** into the **Name** field
+7. Paste the code from HERE into the **State machine definition** section (see screenshot below)
+
+![Create State Machine](/images/create_state_machine.png)
+
+8. This is where the fun begins! This is a builder session, which means that you will not be simply following steps on a web page for the entire session, but instead you will work with the instructor to build the solution. Now it's time to start figuring out how to define the state machine in its entirety and actually get it working! 
+You can use the **reinvent-mdlc-training-workflow** state machine that we've already generated for you via CloudFormation as a reference, and the instructor will also guide you through how to get the state machine working...
+9. When you've finished making all of the required updates, click **Next** in the bottom, right-hand corner of the screen (you may need to scroll down to see it.)
+10. In the next screen that appears, select **Choose an existing IAM Role**, and select the role that contains **Training** in its name
+11. Click **Create state machine**
+
+### Activity 2.2: Create the batch inference workflow state machine
+
 **Steps:**
 
 1. In the AWS Console, click **Services** in the top, left-hand corner of the screen
@@ -43,7 +65,6 @@ You can use the **reinvent-mdlc-training-workflow** state machine that we've alr
 9. When you've finished making all of the required updates, click **Next** in the bottom, right-hand corner of the screen (you may need to scroll down to see it.)
 10. In the next screen that appears, select **Choose an existing IAM Role**, and select the role that contains **BatchInference** in its name
 11. Click **Create state machine**
-
 
 ## Activity 3: Let's test our workflows!
 
@@ -83,4 +104,4 @@ You can use the **reinvent-mdlc-training-workflow** state machine that we've alr
 ```
 5. Now we can watch the workflow progress through each of the states. Be sure to to inspect the inputs and outputs of each state.
 
-As we could see, running an inference job with a newer version of the dataset caused a retraining job to be triggered. This is how you can automate model retraining based on your model's performance!
+*As we could see, running an inference job with a newer version of the dataset caused a retraining job to be triggered. This is how you can automate model retraining based on your model's performance!*
