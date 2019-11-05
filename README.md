@@ -70,10 +70,15 @@ You can use the **reinvent-mdlc-training-workflow** state machine that we've alr
 2. Click on the **reinvent-mdlc-batch-inference-workflow** state machine 
 3. Click **Start execution**
 4. Paste the following into the input field, and click **Start execution**.  Note that we are using a different version of the dataset for inference, as denoted by the "DataDate" parameter:
+```
 {
   "ModelName": "ReInventTestModel",
   "DataDate": "2019-11-01"
 }
+```
+
+![Start Execution](/images/start_execution.png)
+
 5. Now we can watch the workflow progress through each of the states. Be sure to to inspect the inputs and outputs of each state.
 
 As we could see, running an inference job with a newer version of the dataset caused a retraining job to be triggered. This is how you can automate model retraining based on your model's performance!
