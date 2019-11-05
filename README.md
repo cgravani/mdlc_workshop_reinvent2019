@@ -77,7 +77,7 @@ You can use the **reinvent-mdlc-training-workflow** state machine that we've alr
 }
 ```
 
-![Start Execution](/images/start_execution.png)
+![New Execution](/images/new_execution.png)
 
 5. Now we can watch the workflow progress through each of the states. Be sure to to inspect the inputs and outputs of each state.
 
