@@ -36,12 +36,12 @@ A workshop to create an automated ML Model Development Life Cycle (MDLC)
 4. Click **Create state machine**
 5. Select **Author with code snippets**
 6. Enter **reinvent-mdlc-training-workflow** into the **Name** field
-7. Paste the code from HERE into the **State machine definition** section (see screenshot below)
+7. Paste the code from ![here](/code/reinvent-mdlc-training-workflow.txt) into the **State machine definition** section (see screenshot below)
 
 ![Create State Machine](/images/create_state_machine.png)
 
 8. This is where the fun begins! This is a builder session, which means that you will not be simply following steps on a web page for the entire session, but instead you will work with the instructor to build the solution. Now it's time to start figuring out how to define the state machine in its entirety and actually get it working! 
-You can use the **reinvent-mdlc-training-workflow** state machine that we've already generated for you via CloudFormation as a reference, and the instructor will also guide you through how to get the state machine working...
+The instructor will answer questions and guide you through how to get the state machine working...
 9. When you've finished making all of the required updates, click **Next** in the bottom, right-hand corner of the screen (you may need to scroll down to see it.)
 10. In the next screen that appears, select **Choose an existing IAM Role**, and select the role that contains **Training** in its name
 11. Click **Create state machine**
@@ -56,12 +56,12 @@ You can use the **reinvent-mdlc-training-workflow** state machine that we've alr
 4. Click **Create state machine**
 5. Select **Author with code snippets**
 6. Enter **reinvent-mdlc-batch-inference-workflow** into the **Name** field
-7. Paste the code from HERE into the **State machine definition** section (see screenshot below)
+7. Paste the code from ![here](/code/reinvent-mdlc-batch-inference-workflow.txt) into the **State machine definition** section (see screenshot below)
 
 ![Create State Machine](/images/create_state_machine.png)
 
 8. This is where the fun begins! This is a builder session, which means that you will not be simply following steps on a web page for the entire session, but instead you will work with the instructor to build the solution. Now it's time to start figuring out how to define the state machine in its entirety and actually get it working! 
-You can use the **reinvent-mdlc-training-workflow** state machine that we've already generated for you via CloudFormation as a reference, and the instructor will also guide you through how to get the state machine working...
+The instructor will answer questions and guide you through how to get the state machine working...
 9. When you've finished making all of the required updates, click **Next** in the bottom, right-hand corner of the screen (you may need to scroll down to see it.)
 10. In the next screen that appears, select **Choose an existing IAM Role**, and select the role that contains **BatchInference** in its name
 11. Click **Create state machine**
