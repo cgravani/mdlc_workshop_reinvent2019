@@ -1,0 +1,135 @@
+{
+  "StartAt": "????????First State?????????",
+  "States": {
+    "????????First State?????????": {
+      "Type": "Task",
+      "Resource": "????Which Lambda Function ARN????????",
+      "Parameters": {
+        "WorkflowInput.$": "$",
+        "S3RootBucket": "??????Which Bucket????????"
+      },
+      "ResultPath": "$",
+      "Next": "???????What's Next???????",
+      "Catch": [
+      {
+        "ErrorEquals": ["States.ALL"],
+        "Next": "??????What if an error happens????????",
+        "ResultPath": "$.Error"
+      }
+      ]
+    },
+    "????????2nd State??????": {
+      "Type": "Task",
+      "Resource": "??????Which Lambda Function ARN????????",
+      "Parameters": {
+        "ModelName.$": "$.WorkflowRequest.ModelName"
+      },
+      "ResultPath": "$.FindModelOutput",
+      "Next": "???????What's Next???????",
+      "Catch": [
+      {
+        "ErrorEquals": ["States.ALL"],
+        "Next": "??????What if an error happens????????",
+        "ResultPath": "$.Error"
+      }
+      ]
+    },
+    "????????3rd State??????": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sagemaker:createTransformJob.sync",
+      "Parameters": {
+        "TransformJobName.$": "$.InferenceConfig.InferenceJobName",
+        "ModelName.$": "$.FindModelOutput.SageMakerModelName",
+        "TransformInput": {
+          "DataSource": {
+              "S3DataSource": {
+                  "S3DataType": "S3Prefix",
+                  "S3Uri.$": "$.InferenceConfig.InferenceInput.S3Uri"
+              }
+          },
+          "ContentType": "text/csv",
+          "SplitType": "Line",
+          "CompressionType": "None"
+        },
+        "TransformOutput": {
+          "S3OutputPath.$": "$.InferenceConfig.InferenceOutput.S3Uri",
+          "Accept": "text/csv",
+          "AssembleWith": "Line"
+        },
+        "TransformResources": {
+          "InstanceType": "ml.c4.2xlarge",
+          "InstanceCount": 10
+        }
+      },
+      "ResultPath": "$.InferenceOutput",
+      "Next": "???????What's Next???????",
+      "Catch": [
+      {
+        "ErrorEquals": ["States.ALL"],
+        "Next": "??????What if an error happens????????",
+        "ResultPath": "$.Error"
+      }
+      ]
+    },
+    "???????? 4th State ??????": {
+      "Type": "Task",
+      "Resource": "????Which Lambda Function ARN????????",
+      "Parameters": {
+        "PredictionInput.$": "$.MonitorConfig.MonitorInput.PredictionS3Uri",
+        "TargetInput.$": "$.MonitorConfig.MonitorInput.TargetS3Uri"
+      },
+      "ResultPath": "$.MonitoringOutput",
+      "Next": "???????What's Next???????",
+      "Catch": [
+      {
+        "ErrorEquals": ["States.ALL"],
+        "Next": "Handle Error",
+        "ResultPath": "$.Error"
+      }
+      ]
+    },
+    "???????? 5th State ??????": {
+      "Type": "Choice",
+      "Choices": [{
+        "Variable": "$.MonitoringOutput.ModelPerformance",
+        "NumericLessThan": 1.0,
+        "Next": "???????What's Next if we decide that retraining is needed???????"
+      }, {
+        "Variable": "$.MonitoringOutput.ModelPerformance",
+        "NumericGreaterThanEquals": 1.0,
+        "Next": "???????What's Next otherwise???????"
+      }],
+      "Default": "Finalize"
+    },
+    "???????? 6th State ??????": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::states:startExecution.sync",
+      "Parameters": {
+        "Input": {
+          "ModelName.$": "$.WorkflowRequest.ModelName",
+          "DataDate.$": "$.WorkflowRequest.DataDate"
+        },
+        "StateMachineArn": "???????How do we retrain?????????"
+      },
+      "Next": "???????What's Next???????",
+      "Catch": [
+      {
+        "ErrorEquals": ["States.ALL"],
+        "Next": "Handle Error",
+        "ResultPath": "$.Error"
+      }
+      ]
+    },
+    "Finalize": {
+      "Type": "Pass",
+      "End": true
+    },
+    "Handle Error": {
+      "Type": "Pass",
+      "Next": "Failure"
+    },
+    "Failure": {
+      "Type": "Fail"
+    }
+  }
+}
