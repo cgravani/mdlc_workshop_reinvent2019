@@ -50,7 +50,7 @@ In the previous activity, you saw where you can find the ARN for a Lambda functi
 6. Enter **reinvent-mdlc-training-workflow** into the **Name** field
 7. Paste the state machine definition code from your text editor the **State machine definition** section 
 
-![Create State Machine](/images/create_state_machine.png)
+![Create State Machine](/images/create_state_machine_training.png)
 
 8. Click **Next** in the bottom, right-hand corner of the screen (you may need to scroll down to see it.)
 9. In the next screen that appears, select **Choose an existing IAM Role**, and select the role that contains **Training** in its name
@@ -71,7 +71,7 @@ In the previous activity, you saw where you can find the ARN for a Lambda functi
 3. Enter **reinvent-mdlc-batch-inference-workflow** into the **Name** field
 4. Paste the state machine definition code from your text editor the **State machine definition** section (see screenshot below)
 
-![Create State Machine](/images/create_state_machine.png)
+![Create State Machine](/images/create_state_machine_batch.png)
 
 5. Click **Next** in the bottom, right-hand corner of the screen (you may need to scroll down to see it.)
 6. In the next screen that appears, select **Choose an existing IAM Role**, and select the role that contains **BatchInference** in its name
