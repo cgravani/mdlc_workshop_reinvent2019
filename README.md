@@ -22,7 +22,7 @@ A workshop to create an automated ML Model Development Life Cycle (MDLC)
 
 10. Copy all of the code from ![here](/code/reinvent-mdlc-training-initialize-workflow.js) and paste it into the code editor (completely replace all of the default code that was generated in the index.js section of the code editor)
 11. Click **Save**  in the top, right-hand corner of the screen.
-12. You will see the ARN (Amazon Resource Name) for your Lambda function above the **Save** button. This is the unique identifier for your Lambda function. Copy this into a text editor because you will need it later. Pro tip, if you simply click the [] symbol next to the ARN, it will copy it to your clipboard!
+12. You will see the ARN (Amazon Resource Name) for your Lambda function above the **Save** button. This is the unique identifier for your Lambda function. Copy this into a text editor because you will need it later. Pro tip, if you simply click the ![Copy symbol](/images/copy_symbol.PNG) symbol next to the ARN, it will copy it to your clipboard!
 
 
 ## Activity 2: Create Step Functions to manage the workflows
