@@ -35,7 +35,7 @@ A workshop to create an automated ML Model Development Life Cycle (MDLC)
 This is where the fun begins! This is a builder session, which means that you will not be simply following steps on a web page for the entire session, but instead you will work with the instructor to build the solution. Now it's time to start figuring out how to define the state machine in its entirety and actually get it working! 
 The instructor will answer questions and guide you through how to get the state machine defined...
 Note: We use a number of Lambda functions throughout the workflow, so you will need to figure out what they're doing and which ones fit into which steps in the process.
-In the previous activity, you saw where to find the ARN for a Lambda function. ARNs are what we use to tell the step function state machine which resources (for example, Lambda functions) we want to use.*
+In the previous activity, you saw where you can find the ARN for a Lambda function. ARNs are what we use to tell the Step Functions state machine which resources (for example, Lambda functions) we want to use.*
 
 1. When you believe that the state machine is correctly defined, in the AWS Console, click **Services** in the top, left-hand corner of the screen
 2. Type **Step** into the search field and hit Enter
@@ -59,7 +59,7 @@ In the previous activity, you saw where to find the ARN for a Lambda function. A
 This is where the fun begins! This is a builder session, which means that you will not be simply following steps on a web page for the entire session, but instead you will work with the instructor to build the solution. Now it's time to start figuring out how to define the state machine in its entirety and actually get it working! 
 The instructor will answer questions and guide you through how to get the state machine defined...
 Note: We use a number of Lambda functions throughout the workflow, so you will need to figure out what they're doing and which ones fit into which steps in the process.
-In the previous activity, you saw where to find the ARN for a Lambda function. ARNs are what we use to tell the step function state machine which resources (for example, Lambda functions) we want to use.*
+In the previous activity, you saw where you can find the ARN for a Lambda function. ARNs are what we use to tell the Step Functions state machine which resources (for example, Lambda functions) we want to use.*
 
 1. When you believe that the state machine is correctly defined, in the AWS Step Functions Console, click **Create state machine**
 2. Select **Author with code snippets**
