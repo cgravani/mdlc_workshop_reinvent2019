@@ -22,7 +22,7 @@ A workshop to create an automated ML Model Development Life Cycle (MDLC)
 
 10. Copy all of the code from ![here](/code/reinvent-mdlc-training-initialize-workflow.js) and paste it into the code editor (completely replace all of the default code that was generated in the index.js section of the code editor)
 11. Click **Save**  in the top, right-hand corner of the screen.
-12. You will see the ARN (Amazon Resource Name) for your Lambda function above the **Save** button. This is the unique identifier for your Lambda function. Copy this into a text editor because you will need it later. Pro tip, if you simply click the ![Copy symbol](/images/copy_symbol.PNG) symbol next to the ARN, it will copy it to your clipboard!
+12. You will see the ARN (Amazon Resource Name) for your Lambda function above the **Save** button. This is the unique identifier for your Lambda function. Click the ![Copy symbol](/images/copy_symbol.PNG) symbol next to the ARN, and it will copy it to your clipboard. Copy this into a text editor because you will need it later.
 
 
 ## Activity 2: Create Step Functions to manage the workflows
@@ -31,16 +31,19 @@ A workshop to create an automated ML Model Development Life Cycle (MDLC)
 
 **Steps:**
 
-1. First, we are going to define the training workflow state machine. Paste the code from ![here](/code/reinvent-mdlc-training-workflow.txt) into a text editor.
-2. This is where the fun begins! This is a builder session, which means that you will not be simply following steps on a web page for the entire session, but instead you will work with the instructor to build the solution. Now it's time to start figuring out how to define the state machine in its entirety and actually get it working! 
+*First, we are going to define the training workflow state machine. Paste the code from ![here](/code/reinvent-mdlc-training-workflow.txt) into a text editor.
+This is where the fun begins! This is a builder session, which means that you will not be simply following steps on a web page for the entire session, but instead you will work with the instructor to build the solution. Now it's time to start figuring out how to define the state machine in its entirety and actually get it working! 
 The instructor will answer questions and guide you through how to get the state machine defined...
-3. When you believe that the state machine is correctly defined, in the AWS Console, click **Services** in the top, left-hand corner of the screen
-3. Type **Step** into the search field and hit Enter
-4. Click **Get started**
-5. Click **Create state machine**
-6. Select **Author with code snippets**
-7. Enter **reinvent-mdlc-training-workflow** into the **Name** field
-8. Paste the state machine definition code from your text editor the **State machine definition** section (see screenshot below)
+Note: We use a number of Lambda functions throughout the workflow, so you will need to figure out what they're doing and which ones fit into which steps in the process.
+In the previous activity, you saw where to find the ARN for a Lambda function. ARNs are what we use to tell the step function state machine which resources (for example, Lambda functions) we want to use.*
+
+1. When you believe that the state machine is correctly defined, in the AWS Console, click **Services** in the top, left-hand corner of the screen
+2. Type **Step** into the search field and hit Enter
+3. Click **Get started**
+4. Click **Create state machine**
+5. Select **Author with code snippets**
+6. Enter **reinvent-mdlc-training-workflow** into the **Name** field
+7. Paste the state machine definition code from your text editor the **State machine definition** section (see screenshot below)
 
 ![Create State Machine](/images/create_state_machine.png)
 
@@ -52,21 +55,22 @@ The instructor will answer questions and guide you through how to get the state 
 
 **Steps:**
 
-1. In the AWS Console, click **Services** in the top, left-hand corner of the screen
-2. Type **Step** into the search field and hit Enter
-3. Click **Get started**
-4. Click **Create state machine**
-5. Select **Author with code snippets**
-6. Enter **reinvent-mdlc-batch-inference-workflow** into the **Name** field
-7. Paste the code from ![here](/code/reinvent-mdlc-batch-inference-workflow.txt) into the **State machine definition** section (see screenshot below)
+*Next, we are going to define the batch inference workflow state machine. Paste the code from ![here](/code/reinvent-mdlc-batch-inference-workflow.txt) into a text editor.
+This is where the fun begins! This is a builder session, which means that you will not be simply following steps on a web page for the entire session, but instead you will work with the instructor to build the solution. Now it's time to start figuring out how to define the state machine in its entirety and actually get it working! 
+The instructor will answer questions and guide you through how to get the state machine defined...
+Note: We use a number of Lambda functions throughout the workflow, so you will need to figure out what they're doing and which ones fit into which steps in the process.
+In the previous activity, you saw where to find the ARN for a Lambda function. ARNs are what we use to tell the step function state machine which resources (for example, Lambda functions) we want to use.*
+
+1. When you believe that the state machine is correctly defined, in the AWS Step Functions Console, click **Create state machine**
+2. Select **Author with code snippets**
+3. Enter **reinvent-mdlc-batch-inference-workflow** into the **Name** field
+4. Paste the state machine definition code from your text editor the **State machine definition** section (see screenshot below)
 
 ![Create State Machine](/images/create_state_machine.png)
 
-8. This is where the fun begins! This is a builder session, which means that you will not be simply following steps on a web page for the entire session, but instead you will work with the instructor to build the solution. Now it's time to start figuring out how to define the state machine in its entirety and actually get it working! 
-The instructor will answer questions and guide you through how to get the state machine working...
-9. When you've finished making all of the required updates, click **Next** in the bottom, right-hand corner of the screen (you may need to scroll down to see it.)
-10. In the next screen that appears, select **Choose an existing IAM Role**, and select the role that contains **BatchInference** in its name
-11. Click **Create state machine**
+5. Click **Next** in the bottom, right-hand corner of the screen (you may need to scroll down to see it.)
+6. In the next screen that appears, select **Choose an existing IAM Role**, and select the role that contains **BatchInference** in its name
+7. Click **Create state machine**
 
 ## Activity 3: Let's test our workflows!
 
