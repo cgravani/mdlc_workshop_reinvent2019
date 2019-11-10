@@ -22,6 +22,7 @@ A workshop to create an automated ML Model Development Life Cycle (MDLC)
 
 10. Copy all of the code from ![here](/code/reinvent-mdlc-training-initialize-workflow.js) and paste it into the code editor (completely replace all of the default code that was generated in the index.js section of the code editor)
 11. Click **Save**  in the top, right-hand corner of the screen.
+12. You will see the ARN (Amazon Resource Name) for your Lambda function above the **Save** button. This is the unique identifier for your Lambda function. Copy this into a text editor because you will need it later. Pro tip, if you simply click the [] symbol next to the ARN, it will copy it to your clipboard!
 
 
 ## Activity 2: Create Step Functions to manage the workflows
@@ -30,19 +31,20 @@ A workshop to create an automated ML Model Development Life Cycle (MDLC)
 
 **Steps:**
 
-1. In the AWS Console, click **Services** in the top, left-hand corner of the screen
-2. Type **Step** into the search field and hit Enter
-3. Click **Get started**
-4. Click **Create state machine**
-5. Select **Author with code snippets**
-6. Enter **reinvent-mdlc-training-workflow** into the **Name** field
-7. Paste the code from ![here](/code/reinvent-mdlc-training-workflow.txt) into the **State machine definition** section (see screenshot below)
+1. First, we are going to define the training workflow state machine. Paste the code from ![here](/code/reinvent-mdlc-training-workflow.txt) into a text editor.
+2. This is where the fun begins! This is a builder session, which means that you will not be simply following steps on a web page for the entire session, but instead you will work with the instructor to build the solution. Now it's time to start figuring out how to define the state machine in its entirety and actually get it working! 
+The instructor will answer questions and guide you through how to get the state machine defined...
+3. When you believe that the state machine is correctly defined, in the AWS Console, click **Services** in the top, left-hand corner of the screen
+3. Type **Step** into the search field and hit Enter
+4. Click **Get started**
+5. Click **Create state machine**
+6. Select **Author with code snippets**
+7. Enter **reinvent-mdlc-training-workflow** into the **Name** field
+8. Paste the state machine definition code from your text editor the **State machine definition** section (see screenshot below)
 
 ![Create State Machine](/images/create_state_machine.png)
 
-8. This is where the fun begins! This is a builder session, which means that you will not be simply following steps on a web page for the entire session, but instead you will work with the instructor to build the solution. Now it's time to start figuring out how to define the state machine in its entirety and actually get it working! 
-The instructor will answer questions and guide you through how to get the state machine working...
-9. When you've finished making all of the required updates, click **Next** in the bottom, right-hand corner of the screen (you may need to scroll down to see it.)
+9. Click **Next** in the bottom, right-hand corner of the screen (you may need to scroll down to see it.)
 10. In the next screen that appears, select **Choose an existing IAM Role**, and select the role that contains **Training** in its name
 11. Click **Create state machine**
 
