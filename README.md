@@ -40,24 +40,20 @@ In the previous activity, you saw where you can find the ARN for a Lambda functi
 1. When you believe that the state machine is correctly defined, in the AWS Console, click **Services** in the top, left-hand corner of the screen
 2. Type **Step** into the search field and hit Enter
 3. Click **Get started**
-4. In some cases, you will then be presented with the following screen:
+4. In some cases, you will then be presented with the following screen. If so, click on the link that is circled in green in the screenshot here.
 
 ![Create State Machine](/images/hello_world.PNG)
 
-5. If you were not presented with the above screen, skip to step 6 below, otherwise enter **reinvent-mdlc-training-workflow** into the **Name** field, and paste the state machine definition code from your text editor the **State machine definition** section
-
-*If you were not presented with the above screen, perform steps 6 - 9 here; otherwise skip to step 10 below.*
-
-6. Click **Create state machine**
-7. Select **Author with code snippets**
-8. Enter **reinvent-mdlc-training-workflow** into the **Name** field
-9. Paste the state machine definition code from your text editor the **State machine definition** section (see screenshot below)
+5. Click **Create state machine**
+6. Select **Author with code snippets**
+7. Enter **reinvent-mdlc-training-workflow** into the **Name** field
+8. Paste the state machine definition code from your text editor the **State machine definition** section (see screenshot below)
 
 ![Create State Machine](/images/create_state_machine.png)
 
-10. Click **Next** in the bottom, right-hand corner of the screen (you may need to scroll down to see it.)
-11. In the next screen that appears, select **Choose an existing IAM Role**, and select the role that contains **Training** in its name
-12. Click **Create state machine**
+9. Click **Next** in the bottom, right-hand corner of the screen (you may need to scroll down to see it.)
+10. In the next screen that appears, select **Choose an existing IAM Role**, and select the role that contains **Training** in its name
+11. Click **Create state machine**
 
 ### Activity 2.2: Create the batch inference workflow state machine
 
