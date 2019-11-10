@@ -42,9 +42,9 @@ In the previous activity, you saw where you can find the ARN for a Lambda functi
 3. Click **Get started**
 4. In some cases, you will then be presented with the following screen:
 
-![Create State Machine](/images/hello_world_training.PNG)
+![Create State Machine](/images/hello_world.PNG)
 
-5. If not, skip to step 6 below, otherwise enter **reinvent-mdlc-training-workflow** into the **Name** field, and paste the state machine definition code from your text editor the **State machine definition** section (see screenshot below)
+5. If you were not presented with the above screen, skip to step 6 below, otherwise enter **reinvent-mdlc-training-workflow** into the **Name** field, and paste the state machine definition code from your text editor the **State machine definition** section
 
 *If you were not presented with the above screen, perform steps 6 - 9 here; otherwise skip to step 10 below.*
 
