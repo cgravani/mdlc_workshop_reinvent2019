@@ -13,7 +13,7 @@ A workshop to create an automated ML Model Development Life Cycle (MDLC)
 ![Create Function](/images/create_function_training_iam.png)
 
 5. Click on the arrow next to **Choose or create an execution role**
-6. Select **Choose an existing role**
+6. Select **Use an existing role**
 7. In the drop-down menu that appears, select the role that contains **InitializeTraining** in its name
 8. Select **Create function**
 9. Scroll to the **Function code** section and ensure that the **Code entry type** is set to **Edit code inline** (see screenshot below)
