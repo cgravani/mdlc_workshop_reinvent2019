@@ -1,0 +1,61 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: AWS CloudFormation MDLC Sample Template.
+Parameters:
+  Stage: {Type: String, Default: 'test'}
+  Region: {Type: String, Default: 'USAmazon'}
+  UseBatsKeyParam: {Type: String, Default: 'false', AllowedValues: ['true','false']}
+  DeploymentBucketImportName:
+    Type: String
+    Default: "DeploymentBucket"
+    Description: "This parameter is meant to be passed by LPT (and piplines). It holds the name of import that points to the bucket that holds your artifacts. You should use this as the import (Fn::ImportValue: {Ref: DeploymentBucket}) for getting any BATS related artifacts."
+  MDLCWorkshopPublicArtifactBucket:
+    Type: String
+    Default: "kk-public-ws-bucket"
+  InputDataKey:
+    Type: String
+    Default: "input-data"
+  LambdaLayerArtifactKey:
+    Type: String
+    Default: "python-libs"
+  PandasLambdaLayerArtifactKey:
+    Type: String
+    Default: "python-libs/python36-pandas24.zip"
+  SklearnLambdaLayerArtifactKey:
+    Type: String
+    Default: "python-libs/python36-sklearn203.zip"
+Conditions:
+  UseBatsKey:
+    'Fn::Equals':
+      - {Ref: UseBatsKeyParam}
+      - 'true'
+Resources:
+  MDLCS3Bucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Delete
+  InputDataObject:
+    Type: Custom::S3Object
+    Properties:
+      ServiceToken: !GetAtt CopyS3ResourceFunction.Arn
+      Source:
+        Bucket: !Ref MDLCWorkshopPublicArtifactBucket
+        Key: !Ref InputDataKey
+      Target:
+        Bucket: !Ref MDLCS3Bucket
+        Key: !Ref InputDataKey
+  LayerArtifactObject:
+    Type: Custom::S3Object
+    Properties:
+      ServiceToken: !GetAtt CopyS3ResourceFunction.Arn
+      Source:
+        Bucket: !Ref MDLCWorkshopPublicArtifactBucket
+        Key: !Ref LambdaLayerArtifactKey
+      Target:
+        Bucket: !Ref MDLCS3Bucket
+        Key: !Ref LambdaLayerArtifactKey
+
+Outputs:
+  StackArn:
+    Description: Don't remove this output! Pipelines needs this to do its association. (And LPT. Removing it will break things)
+    Value: {Ref: 'AWS::StackId'}
