@@ -1,0 +1,83 @@
+---
+Resources:
+  PandasLayer:
+    Type: "AWS::Serverless::LayerVersion"
+    Properties:
+      LayerName: pandas-layer
+      Description: pandas 0-24-2 pyst 2018-4 s3fs 0-1-5
+      ContentUri:
+        Bucket: !Ref MDLCS3Bucket
+        Key: !Ref PandasLambdaLayerArtifactKey
+      CompatibleRuntimes:
+        - python3.6
+    DependsOn: LayerArtifactObject
+  SklearnLayer:
+    Type: "AWS::Serverless::LayerVersion"
+    Properties:
+      LayerName: sklearn-layer
+      Description: numpy 1-14-3 scipy 1-1-0 skleran 0-20-3
+      ContentUri:
+        Bucket: !Ref MDLCS3Bucket
+        Key: !Ref SklearnLambdaLayerArtifactKey
+      CompatibleRuntimes:
+        - python3.6
+    DependsOn: LayerArtifactObject
+  MonitorModelPerformanceLambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      InlineCode: |
+        import boto3
+        import os
+
+        import numpy as np
+        import pandas as pd
+
+        from sklearn.metrics import roc_auc_score
+
+
+        s3_client = boto3.client('s3')
+
+        def lambda_handler(event, context):
+
+            ## load the dataset date and s3 input path
+            # dataset_date = event['DatasetDate']
+            # run_date = event['RunDate']
+            preduction_path = event['PredictionInput']
+            target_path = event['TargetInput']
+
+            ## read the target and inference result
+            target = pd.read_csv(target_path, header=None, names=['target'])
+            prediction = pd.read_csv(preduction_path, header=None, names=['prediction'])
+
+            ## compute the monitoring result
+            monitoring_result = roc_auc_score(target.values, prediction.values)
+
+            # print('By {}, for the dataset date {}, the AUC is {}'.format(run_date, dataset_date, monitoring_result))
+
+            return {'ModelPerformance': monitoring_result}
+
+      FunctionName: reinvent-mdlc-monitoring-model-performance
+      Description: Monitor SageMaker model performance
+      Handler: 'index.lambda_handler'
+      Layers:
+        - !Ref SklearnLayer
+        - !Ref PandasLayer
+      Runtime: python3.6
+      MemorySize: 128
+      Timeout: 900
+      Role:
+        Fn::GetAtt: [MonitorModelPerformanceLambdaFunctionRole, Arn]
+
+  MonitorModelPerformanceLambdaFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: ['sts:AssumeRole']
+          Effect: Allow
+          Principal:
+            Service: [lambda.amazonaws.com]
+        Version: '2012-10-17'
