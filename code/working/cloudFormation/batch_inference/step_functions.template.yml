@@ -1,0 +1,165 @@
+---
+Resources:
+  BatchInferenceWorkflowRole:
+    Type: AWS::IAM::Role
+    Properties:
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSLambdaFullAccess
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaRole
+        - arn:aws:iam::aws:policy/AmazonSageMakerFullAccess
+        - arn:aws:iam::aws:policy/AWSBatchFullAccess
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+        - arn:aws:iam::aws:policy/AWSStepFunctionsFullAccess
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: ['sts:AssumeRole']
+            Effect: Allow
+            Principal:
+              Service: [states.amazonaws.com]
+        Version: '2012-10-17'
+  ReInventMDLCBatchInferenceWorkflow:
+    Type: AWS::StepFunctions::StateMachine
+    Properties:
+      StateMachineName: reinvent-mdlc-batch-inference-workflow
+      RoleArn:
+        Fn::GetAtt:
+          - BatchInferenceWorkflowRole
+          - Arn
+      DefinitionString:
+        Fn::Sub:
+          |-
+          {
+            "StartAt": "Initialize",
+            "States": {
+              "Initialize": {
+                "Type": "Task",
+                "Resource": "${InitializeBatchInferenceWorkflowLambdaFunction.Arn}",
+                "Parameters": {
+                  "WorkflowInput.$": "$",
+                  "S3RootBucket": "${MDLCS3Bucket}"
+                },
+                "ResultPath": "$",
+                "Next": "Find Model",
+                "Catch": [
+                {
+                  "ErrorEquals": ["States.ALL"],
+                  "Next": "Handle Error",
+                  "ResultPath": "$.Error"
+                }
+                ]
+              },
+              "Find Model": {
+                "Type": "Task",
+                "Resource": "${FindModelLambdaFunction.Arn}",
+                "Parameters": {
+                  "ModelName.$": "$.WorkflowRequest.ModelName"
+                },
+                "ResultPath": "$.FindModelOutput",
+                "Next": "Inference",
+                "Catch": [
+                {
+                  "ErrorEquals": ["States.ALL"],
+                  "Next": "Handle Error",
+                  "ResultPath": "$.Error"
+                }
+                ]
+              },
+              "Inference": {
+                "Type": "Task",
+                "Resource": "arn:aws:states:::sagemaker:createTransformJob.sync",
+                "Parameters": {
+                  "TransformJobName.$": "$.InferenceConfig.InferenceJobName",
+                  "ModelName.$": "$.FindModelOutput.SageMakerModelName",
+                  "TransformInput": {
+                    "DataSource": {
+                        "S3DataSource": {
+                            "S3DataType": "S3Prefix",
+                            "S3Uri.$": "$.InferenceConfig.InferenceInput.S3Uri"
+                        }
+                    },
+                    "ContentType": "text/csv",
+                    "SplitType": "Line",
+                    "CompressionType": "None"
+                  },
+                  "TransformOutput": {
+                    "S3OutputPath.$": "$.InferenceConfig.InferenceOutput.S3Uri",
+                    "Accept": "text/csv",
+                    "AssembleWith": "Line"
+                  },
+                  "TransformResources": {
+                    "InstanceType": "ml.c4.2xlarge",
+                    "InstanceCount": 10
+                  }
+                },
+                "ResultPath": "$.InferenceOutput",
+                "Next": "Monitor Model Performance",
+                "Catch": [
+                {
+                  "ErrorEquals": ["States.ALL"],
+                  "Next": "Handle Error",
+                  "ResultPath": "$.Error"
+                }
+                ]
+              },
+              "Monitor Model Performance": {
+                "Type": "Task",
+                "Resource": "${MonitorModelPerformanceLambdaFunction.Arn}",
+                "Parameters": {
+                  "PredictionInput.$": "$.MonitorConfig.MonitorInput.PredictionS3Uri",
+                  "TargetInput.$": "$.MonitorConfig.MonitorInput.TargetS3Uri"
+                },
+                "ResultPath": "$.MonitoringOutput",
+                "Next": "Is Re-training Needed?",
+                "Catch": [
+                {
+                  "ErrorEquals": ["States.ALL"],
+                  "Next": "Handle Error",
+                  "ResultPath": "$.Error"
+                }
+                ]
+              },
+              "Is Re-training Needed?": {
+                "Type": "Choice",
+                "Choices": [{
+                  "Variable": "$.MonitoringOutput.ModelPerformance",
+                  "NumericLessThan": 1.0,
+                  "Next": "Re-train Model"
+                }, {
+                  "Variable": "$.MonitoringOutput.ModelPerformance",
+                  "NumericGreaterThanEquals": 1.0,
+                  "Next": "Finalize"
+                }],
+                "Default": "Finalize"
+              },
+              "Re-train Model": {
+                "Type": "Task",
+                "Resource": "arn:aws:states:::states:startExecution.sync",
+                "Parameters": {
+                  "Input": {
+                    "ModelName.$": "$.WorkflowRequest.ModelName",
+                    "DataDate.$": "$.WorkflowRequest.DataDate"
+                  },
+                  "StateMachineArn": "${ReInventMDLCTrainingWorkflow}"
+                },
+                "Next": "Finalize",
+                "Catch": [
+                {
+                  "ErrorEquals": ["States.ALL"],
+                  "Next": "Handle Error",
+                  "ResultPath": "$.Error"
+                }
+                ]
+              },
+              "Finalize": {
+                "Type": "Pass",
+                "End": true
+              },
+              "Handle Error": {
+                "Type": "Pass",
+                "Next": "Failure"
+              },
+              "Failure": {
+                "Type": "Fail"
+              }
+            }
+          }
