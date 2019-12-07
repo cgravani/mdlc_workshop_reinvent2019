@@ -1,0 +1,111 @@
+import base64
+import boto3
+import httplib
+import json
+import os
+
+from urllib2 import build_opener, HTTPHandler, Request
+
+
+s3_client = boto3.client("s3")
+
+def sendResponse(event, context, status, message):
+    bucket = event["ResourceProperties"].get("Target", {}).get("Bucket")
+    key = event["ResourceProperties"].get("Target", {}).get("Key")
+
+    body = json.dumps({
+        "Status": status,
+        "Reason": message,
+        "StackId": event['StackId'],
+        "RequestId": event['RequestId'],
+        "LogicalResourceId": event['LogicalResourceId'],
+        "PhysicalResourceId": "s3://{}/{}".format(bucket, key),
+        "Data": {
+            "Bucket": bucket,
+            "Key": key,
+        },
+    })
+
+    request = Request(event['ResponseURL'], data=body)
+    request.add_header('Content-Type', '')
+    request.add_header('Content-Length', len(body))
+    request.get_method = lambda: 'PUT'
+
+    opener = build_opener(HTTPHandler)
+    response = opener.open(request)
+
+def handler(event, context):
+    print("Received request:", json.dumps(event, indent=4))
+
+    request = event["RequestType"]
+    properties = event["ResourceProperties"]
+    print properties
+
+    if "Target" not in properties or all(prop not in properties for prop in ["Body", "Base64Body", "Source"]):
+        return sendResponse(event, context, "FAILED", "Missing required parameters")
+
+    target = properties["Target"]
+
+    sink_bucket = target["Bucket"]
+    sink_prefix = target["Key"]
+
+    if request in ("Create", "Update"):
+        if "Body" in properties:
+            target.update({
+                "Body": properties["Body"],
+            })
+
+            s3_client.put_object(**target)
+
+        elif "Base64Body" in properties:
+            try:
+                body = base64.b64decode(properties["Base64Body"])
+            except:
+                return sendResponse(event, context, "FAILED", "Malformed Base64Body")
+
+            target.update({
+                "Body": body
+            })
+
+            s3_client.put_object(**target)
+
+        elif "Source" in properties:
+            source = properties["Source"]
+            source_bucket = source["Bucket"]
+            source_prefix = source["Key"]
+
+            paginator = s3_client.get_paginator("list_objects_v2")
+            page_iterator = paginator.paginate(Bucket=source_bucket, Prefix=source_prefix)
+
+            for source_key in {x['Key'] for page in page_iterator for x in page["Contents"]}:
+                sink_key = os.path.join(sink_prefix, os.path.relpath(source_key, source_prefix))
+                print "copy {} to {}".format(source_key, sink_key)
+
+                if not source_key.endswith("/"):
+                    print "copy {} to {}".format(source_key, sink_key)
+                    s3_client.copy_object(
+                        CopySource={"Bucket": source_bucket, "Key": source_key},
+                        Bucket=sink_bucket,
+                        Key = sink_key,
+                        MetadataDirective="COPY",
+                        TaggingDirective="COPY"
+                    )
+
+        else:
+            return sendResponse(event, context, "FAILED", "Malformed body")
+
+        return sendResponse(event, context, "SUCCESS", "Created")
+
+    if request == "Delete":
+
+        paginator = s3_client.get_paginator("list_objects_v2")
+        page_iterator = paginator.paginate(Bucket=sink_bucket, Prefix=sink_prefix)
+        sink_objects = [{'Key': x['Key']} for page in page_iterator for x in page['Contents']]
+        s3_client.delete_objects(
+            Bucket=sink_bucket,
+            Delete={'Objects': sink_objects}
+        )
+
+        return sendResponse(event, context, "SUCCESS", "Deleted")
+
+    return sendResponse(event, context, "FAILED", "Unexpected: {}".format(request))
