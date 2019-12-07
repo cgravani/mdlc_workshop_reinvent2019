@@ -1,0 +1,18 @@
+---
+Resources:
+  #MODEL REGISTRY table
+  ModelTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: "MODEL_NAME"
+          AttributeType: "S"
+        - AttributeName: "MODEL_TIMESTAMP"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "MODEL_NAME"
+          KeyType: "HASH"
+        - AttributeName: "MODEL_TIMESTAMP"
+          KeyType: "RANGE"
+      TableName: "MODEL_REGISTRY"
+      BillingMode: PAY_PER_REQUEST
