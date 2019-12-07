@@ -1,0 +1,186 @@
+---
+Resources:
+  TrainingWorkflowRole:
+    Type: AWS::IAM::Role
+    Properties:
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSLambdaFullAccess
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaRole
+        - arn:aws:iam::aws:policy/AmazonSageMakerFullAccess
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: ['sts:AssumeRole']
+            Effect: Allow
+            Principal:
+              Service: [states.amazonaws.com]
+        Version: '2012-10-17'
+  SageMakerTrainingRole:
+    Type: AWS::IAM::Role
+    Properties:
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonSageMakerFullAccess
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: ['sts:AssumeRole']
+            Effect: Allow
+            Principal:
+              Service: [sagemaker.amazonaws.com]
+        Version: '2012-10-17'
+  ReInventMDLCTrainingWorkflow:
+    Type: AWS::StepFunctions::StateMachine
+    Properties:
+      StateMachineName: reinvent-mdlc-training-workflow
+      RoleArn:
+        Fn::GetAtt:
+          - TrainingWorkflowRole
+          - Arn
+      DefinitionString:
+        Fn::Sub:
+          |-
+          {
+            "StartAt": "Initialize",
+            "States": {
+              "Initialize": {
+                "Type": "Task",
+                "Resource": "${InitializeTrainingWorkflowLambdaFunction.Arn}",
+                "Parameters": {
+                  "WorkflowInput.$": "$",
+                  "S3RootBucket": "${MDLCS3Bucket}"
+                },
+                "ResultPath": "$",
+                "Next": "Train Model",
+                "Catch": [
+                {
+                  "ErrorEquals": ["States.ALL"],
+                  "Next": "Handle Error",
+                  "ResultPath": "$.Error"
+                }
+                ]
+              },
+              "Train Model": {
+                "Type": "Task",
+                "Resource": "arn:aws:states:::sagemaker:createTrainingJob.sync",
+                "Parameters": {
+                  "TrainingJobName.$": "$.TrainingConfig.TrainingJobName",
+                  "AlgorithmSpecification": {
+                    "TrainingImage": "433757028032.dkr.ecr.us-west-2.amazonaws.com/xgboost:1",
+                    "TrainingInputMode": "File"
+                  },
+                  "RoleArn": "${SageMakerTrainingRole.Arn}",
+                  "HyperParameters": {
+                    "objective": "binary:logistic",
+                    "colsample_bytree": "0.7",
+                    "max_depth": "4",
+                    "eta": "0.2",
+                    "gamma": "4",
+                    "min_child_weight": "6",
+                    "subsample": "0.7",
+                    "learning_rate": "0.075",
+                    "silent": "0",
+                    "num_round": "200",
+                    "seed": "0"
+                  },
+                  "InputDataConfig": [
+                    {
+                      "ChannelName": "train",
+                      "DataSource": {
+                        "S3DataSource": {
+                          "S3DataType": "S3Prefix",
+                          "S3Uri.$": "$.TrainingConfig.TrainingInput.S3Uri",
+                          "S3DataDistributionType": "FullyReplicated"
+                        }
+                      },
+                      "CompressionType": "None",
+                      "RecordWrapperType": "None",
+                      "ContentType": "text/csv"
+                    },
+                    {
+                      "ChannelName": "validation",
+                      "DataSource": {
+                        "S3DataSource": {
+                          "S3DataType": "S3Prefix",
+                          "S3Uri.$": "$.TrainingConfig.ValidationInput.S3Uri",
+                          "S3DataDistributionType": "FullyReplicated"
+                        }
+                      },
+                      "CompressionType": "None",
+                      "RecordWrapperType": "None",
+                      "ContentType": "text/csv"
+                    }
+                  ],
+                  "OutputDataConfig": {
+                    "S3OutputPath.$": "$.TrainingConfig.TrainingOutput.S3Uri"
+                  },
+                  "ResourceConfig": {
+                    "InstanceCount": 1,
+                    "InstanceType": "ml.m5.4xlarge",
+                    "VolumeSizeInGB": 50
+                  },
+                  "StoppingCondition": {
+                    "MaxRuntimeInSeconds": 3600
+                  }
+                },
+                "ResultPath": "$.TrainingOutput",
+                "Next": "Create Model",
+                "Catch": [
+                {
+                  "ErrorEquals": ["States.ALL"],
+                  "Next": "Handle Error",
+                  "ResultPath": "$.Error"
+                }
+                ]
+              },
+              "Create Model": {
+                "Type": "Task",
+                "Resource": "arn:aws:states:::sagemaker:createModel",
+                "Parameters": {
+                  "ModelName.$": "$.TrainingConfig.TrainingJobName",
+                  "ExecutionRoleArn": "${SageMakerTrainingRole.Arn}",
+                  "PrimaryContainer": {
+                    "Image": "433757028032.dkr.ecr.us-west-2.amazonaws.com/xgboost:1",
+                    "ModelDataUrl.$": "$.TrainingOutput.ModelArtifacts.S3ModelArtifacts"
+                  }
+                },
+                "ResultPath": "$.CreateModelOutput",
+                "Next": "Register Model",
+                "Catch": [
+                {
+                  "ErrorEquals": ["States.ALL"],
+                  "Next": "Handle Error",
+                  "ResultPath": "$.Error"
+                }
+                ]
+              },
+              "Register Model": {
+                "Type": "Task",
+                "Resource": "${RegisterModelLambdaFunction.Arn}",
+                "Parameters": {
+                  "ModelName.$": "$.WorkflowRequest.ModelName",
+                  "SageMakerModelName.$": "$.TrainingConfig.TrainingJobName",
+                  "Timestamp.$": "$.RunDate"
+                },
+                "ResultPath": "$.RegisterModelOutput",
+                "Next": "Finalize",
+                "Catch": [
+                {
+                  "ErrorEquals": ["States.ALL"],
+                  "Next": "Handle Error",
+                  "ResultPath": "$.Error"
+                }
+                ]
+              },
+              "Finalize": {
+                "Type": "Pass",
+                "End": true
+              },
+              "Handle Error": {
+                "Type": "Pass",
+                "Next": "Failure"
+              },
+              "Failure": {
+                "Type": "Fail"
+              }
+            }
+          }
