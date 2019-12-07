@@ -116,3 +116,6 @@ In the previous activity, you saw where you can find the ARN for a Lambda functi
 5. Now we can watch the workflow progress through each of the states. Be sure to to inspect the inputs and outputs of each state.
 
 *As we could see, running an inference job with a newer version of the dataset caused a retraining job to be triggered. This is how you can automate model retraining based on your model's performance!*
+
+## Full Working Source Code
+After you completes the workshop, you can view the full original CloudFormation template, and Lambda Function source code [here](/code/working/).
